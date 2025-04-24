@@ -39,17 +39,6 @@ You’ll receive a detailed explanation of what might be suspicious in the link.
 
 ---
 
-## 📁 Project Structure
-
-```
-phish-checker/
-├── index.html       # The complete tool (UI + logic)
-├── README.md        # Project documentation
-├── LICENSE          # MIT License
-```
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License.  
