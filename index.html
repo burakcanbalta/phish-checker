@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phish Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-size: 16px;
+      background-color: #008cba;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0079a1;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      width: 320px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .safe {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Phish Checker</h1>
+  <input type="text" id="urlInput" placeholder="Bir link gir (örnek: http://example.com)" />
+  <button onclick="checkURL()">Kontrol Et</button>
+  <div id="result" class="result" style="display:none;"></div>
+
+  <script>
+    function checkURL() {
+      const url = document.getElementById("urlInput").value.trim();
+      const result = document.getElementById("result");
+
+      if (!url) {
+        result.textContent = "Lütfen bir URL gir.";
+        result.className = "result danger";
+        result.style.display = "block";
+        return;
+      }
+
+      let score = 0;
+      const findings = [];
+
+      const ipRegex = /^https?:\/\/(\d{1,3}\.){3}\d{1,3}/;
+      if (ipRegex.test(url)) {
+        findings.push("🔴 IP adresiyle yazılmış!");
+        score += 40;
+      }
+
+      if (url.includes("@")) {
+        findings.push("🔴 '@' karakteri içeriyor!");
+        score += 30;
+      }
+
+      try {
+        const parsed = new URL(url);
+        const domainParts = parsed.hostname.split(".");
+        if (domainParts.length > 3) {
+          findings.push("🔴 Çok fazla subdomain içeriyor!");
+          score += 20;
+        }
+      } catch (e) {
+        findings.push("⚠️ Geçerli bir URL değil!");
+        score += 50;
+      }
+
+      result.style.display = "block";
+      if (score >= 50) {
+        result.className = "result danger";
+        result.innerHTML = findings.join("<br>") + "<br><br><strong>Bu link şüpheli olabilir!</strong>";
+      } else {
+        result.className = "result safe";
+        result.innerHTML = "✅ Güvenli görünüyor.";
+      }
+    }
+  </script>
+</body>
+</html>
